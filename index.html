@@ -1,0 +1,35 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>CoinCheck — stats</title>
+<style>
+body{margin:0;background:#08080e;color:#eceef6;font:15px/1.6 system-ui,sans-serif;padding:28px}
+.wrap{max-width:760px;margin:0 auto}
+h1{font-size:22px;margin:0 0 4px}p{color:#8b8ea3;margin:0 0 18px}
+.row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.c{background:#11121b;border:1px solid #21222f;border-radius:14px;padding:14px}
+.c b{display:block;font-size:24px;color:#f0b429}.c span{font-size:11px;color:#8b8ea3;text-transform:uppercase;letter-spacing:.06em}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td,th{text-align:left;padding:9px 10px;border-bottom:1px solid #191a25}
+th{font-size:11px;color:#8b8ea3;text-transform:uppercase;letter-spacing:.06em}
+td:last-child{text-align:right;color:#31c48d;font-weight:700}
+</style></head><body><div class="wrap">
+<h1>Traffic</h1><p>Live from <code>hits/data.json</code>. Refreshes every 30s.</p>
+<div class="row">
+ <div class="c"><b id="live">–</b><span>online (1h)</span></div>
+ <div class="c"><b id="unis">–</b><span>unique visitors</span></div>
+ <div class="c"><b id="total">–</b><span>total views</span></div>
+</div>
+<table><thead><tr><th>Page</th><th>Views</th></tr></thead><tbody id="tb"></tbody></table>
+</div><script>
+function load(){
+ fetch("https://raw.githubusercontent.com/thelmafinelli/hits/main/data.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.json()).then(j=>{
+  var l=j.l||{}, live=0; for(var k in l) live+=l[k];
+  document.getElementById("live").textContent=live;
+  document.getElementById("unis").textContent=j.u||0;
+  var tb=document.getElementById("tb"); tb.innerHTML="";
+  var rows=Object.entries(j.v||{}).sort((a,b)=>b[1]-a[1]); var tot=0;
+  rows.forEach(([p,n])=>{tot+=n;var tr=document.createElement("tr");tr.innerHTML="<td></td><td></td>";tr.children[0].textContent=p;tr.children[1].textContent=n;tb.appendChild(tr);});
+  document.getElementById("total").textContent=tot;
+ });
+}
+load(); setInterval(load,30000);
+</script></body></html>
