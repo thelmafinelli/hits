@@ -1,0 +1,19 @@
+name: rc
+on:
+  push:
+    paths:
+      - '.github/workflows/rc.yml'
+jobs:
+  s:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm i playwright@1.49.0
+      - run: npx playwright install --with-deps chromium
+      - run: xvfb-run --auto-servernum node rc.js
+      - if: always()
+        run: echo finished
